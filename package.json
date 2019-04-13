@@ -3,8 +3,17 @@
   "version": "1.0.0",
   "description": "Generate JavaScript classes from JSON/JS beans",
   "main": "index.js",
+  "bin": {
+    "classjar": "index.js"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "preferGlobal": true,
   "author": "Alexandru Catrina",
   "license": "MIT",
+  "repository": "github:lexndru/classjar",
+  "homepage": "https://github.com/lexndru/classjar",
   "dependencies": {
     "argparse": "^1.0.10",
     "filecraft": "^1.0.0"
@@ -30,7 +39,8 @@
   ],
   "standard": {
     "ignore": [
-      "test/"
+      "test/",
+      "samples/classes"
     ]
   }
 }
