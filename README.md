@@ -1,6 +1,7 @@
 # ClassJar
+[![Build Status](https://travis-ci.org/lexndru/classjar.svg?branch=master)](https://travis-ci.org/lexndru/classjar)
 
-ClassJar is a Node.js utility tool to generate JavaScript classes from a structured datasets called beans. The purpose is to obtain custom user-defined objects with predefined getters and setters. This project is inspired by Java's JAXB.
+ClassJar is a Node.js utility tool to generate JavaScript classes from structured datasets called beans. The purpose is to obtain custom user-defined objects with predefined getters and setters. This project is inspired by Java's JAXB.
 
 # Install from npm
 ```
@@ -26,7 +27,7 @@ class Person {
   }
 
   getFirstName () {
-
+...
 ```
 
 Currently it supports JSON files and JS modules as beans.
