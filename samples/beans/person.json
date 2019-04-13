@@ -1,0 +1,5 @@
+{
+    "first.name": "string",
+    "last.name": "string",
+    "age": "uint8"
+}
