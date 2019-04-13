@@ -1,4 +1,4 @@
-// Generated JavaScript class file with ClassJar v1.0.0
+// JavaScript class generated with ClassJar
 
 class Person {
   constructor () {

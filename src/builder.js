@@ -90,7 +90,7 @@ class ClassBuilder {
    */
   dump () {
     let name = this._name
-    let comm = `// Generated JavaScript class file with ClassJar v1.0.0`
+    let comm = `// JavaScript class generated with ClassJar`
     let constructor_ = this._head
     let methods = this._body
     let clazz = `class ${name}{constructor(){${constructor_}}${methods}}`
