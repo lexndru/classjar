@@ -8,7 +8,7 @@ class SoftwareDeveloper {
     this.__programminglanguage = null;
   }
 
-   getFirstName () {
+  getFirstName () {
     if (this.__firstname === null) {
       throw new Error('Property "first.name" is not set');
     }

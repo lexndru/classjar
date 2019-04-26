@@ -25,7 +25,7 @@ const classTemplate = (className, classMethods, constructorBody) => `
 // JavaScript class generated with ClassJar
 
 class ${className} {
-  constructor () {${constructorBody}} ${classMethods}
+  constructor () {${constructorBody}}${classMethods}
 
   static Dump (object, keepObject) {
     if (object instanceof ${className}) {

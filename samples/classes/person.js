@@ -7,7 +7,7 @@ class Person {
     this.__age = null;
   }
 
-   getFirstName () {
+  getFirstName () {
     if (this.__firstname === null) {
       throw new Error('Property "first.name" is not set');
     }

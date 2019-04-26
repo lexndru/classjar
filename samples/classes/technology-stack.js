@@ -8,7 +8,7 @@ class TechnologyStack {
     this.__legacy = null;
   }
 
-   getFrontend () {
+  getFrontend () {
     if (this.__frontend === null) {
       throw new Error('Property "frontend" is not set');
     }
