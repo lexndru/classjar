@@ -56,7 +56,9 @@ class ClassCraft extends FileCraft {
         ctx.decIndent()
         indent = ctx.indent
       }
-      feed[i] = indent + feed[i]
+      if (feed[i] && feed[i].substring(0, indent.length) !== indent) {
+        feed[i] = indent + feed[i]
+      }
     }
     return feed
   }
@@ -81,10 +83,10 @@ class ClassCraft extends FileCraft {
         let len = tokens.length
         feed[i] = feed[i].substring(0, len) + ' ' + feed[i].substring(len)
       }
-      tokens = feed[i].match(/[^>!]?(={1,3})[^>]?/)
+      tokens = feed[i].match(/[^>!]?(!?=+)[^>]?/)
       if (tokens != null && tokens.length > 1) {
         let pos = feed[i].indexOf(tokens[1])
-        let len = tokens.length
+        let len = tokens[1].length
         let before = feed[i].substring(0, pos)
         let after = feed[i].substring(len + pos)
         if (!before.endsWith(' ')) {
@@ -131,6 +133,9 @@ class ClassCraft extends FileCraft {
       if (pos > -1) {
         let before = feed[i].substring(0, pos)
         let after = feed[i].substring(pos + token.length)
+        if (after.startsWith(' ')) {
+          after = after.trim()
+        }
         feed[i] = `${before}${token} ${after}`
         break
       }
@@ -146,15 +151,10 @@ class ClassCraft extends FileCraft {
   _defMultiline (feed) {
     for (let i = 0; i < feed.length; i++) {
       let index = feed[i].search(/[{};]/)
-      if (index > -1) {
+      if (feed[i].charAt(index + 1) && index > -1) {
         let before = feed[i].substring(0, index + 1)
         let after = feed[i].substring(index + 1)
-        let nextline = feed[i + 1]
-        if (nextline !== undefined) {
-          feed[i + 1] = after
-          after = nextline
-        }
-        feed.push(after)
+        feed.splice(i + 1, 0, after)
         feed[i] = before
       }
     }

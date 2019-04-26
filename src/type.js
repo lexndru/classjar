@@ -63,7 +63,9 @@ const types = {
   set: v => v instanceof Set,
   map: v => v instanceof Map,
 
-  object: v => v === Object(v)
+  object: v => v === Object(v),
+
+  boolean: v => v === true || v === false
 
 }
 

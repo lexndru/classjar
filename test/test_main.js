@@ -48,4 +48,13 @@ describe('Main', () => {
     })
   })
 
+  it('should serialize generated classes', async () => {
+    const Person = require(dump1)
+    let p1 = new Person()
+    p1.setFirstName('alexandru')
+    let obj = Person.Dump(p1)
+    let p2 = Person.Load(obj)
+    assert.equal(p1.getFirstName(), p2.getFirstName())
+  })
+
 })

@@ -19,6 +19,7 @@
 // SOFTWARE.
 
 const { ClassBean } = require('./bean')
+const { classTemplate } = require('./tpl')
 
 /**
  * ClassBuilder is a text template formatter that handlers the content of
@@ -67,7 +68,7 @@ class ClassBuilder {
     }
     for (let { prop, attr, guards } of this._bean.all()) {
       this._body += `${attr.getter} () {`
-      this._body += `if(this.${attr.prop}==null){`
+      this._body += `if(this.${attr.prop}===null){`
       this._body += `throw new Error('Property "${prop}" is not set');}`
       this._body += `return this.${attr.prop};}`
       this._body += `${attr.setter} (value) {`
@@ -89,13 +90,7 @@ class ClassBuilder {
    * @return        String     Entire class template
    */
   dump () {
-    let name = this._name
-    let comm = `// JavaScript class generated with ClassJar`
-    let constructor_ = this._head
-    let methods = this._body
-    let clazz = `class ${name}{constructor(){${constructor_}}${methods}}`
-    let out = comm + '\n\n' + clazz + '\n' + `module.exports = ${name};`
-    return out
+    return classTemplate(this._name, this._body, this._head).substring(1)
   }
 }
 
