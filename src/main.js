@@ -102,7 +102,6 @@ async function main (argv) {
     }
 
     className = jar.bean.getName()
-
   } catch (e) {
     process.stderr.write(`Cannot generate class from bean!${os.EOL}`)
     process.stderr.write(` (error) => ${e.message}${os.EOL}`)
@@ -116,7 +115,6 @@ async function main (argv) {
   if (!args.preview) {
     process.stdout.write(` (file) => ${output}.js${os.EOL}`)
   }
-
 }
 
 module.exports = { main }
