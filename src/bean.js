@@ -26,13 +26,13 @@ const { pascalize } = require('./text')
  * class name. All properties are transformed into Attributes.
  *
  * @param name    String    The name of the class
- * @param props   Set       Unique set of class properties
+ * @param props   Map       Unique set of class properties
  * @param guards  Map       Map between properties and guards
  */
 class ClassBean {
   constructor () {
     this._name = null
-    this._props = new Set()
+    this._props = new Map()
     this._guards = new Map()
   }
 
@@ -77,14 +77,16 @@ class ClassBean {
    *
    * Add new property to class or throw an error if property already exists
    *
-   * @param prop    String      New property to add
-   * @throws        Error       Propery prop already exists
+   * @param prop        String      New property to add
+   * @param value       Object      Default property value (optional)
+   * @param immutable   Boolean     If true, value cannot be changed afterwards
+   * @throws            Error       Propery prop already exists
    */
-  addProperty (prop) {
+  addProperty (prop, value = null, immutable = false) {
     if (this._props.has(prop)) {
       throw new Error(`Propery "${prop}" already exists`)
     }
-    this._props.add(prop)
+    this._props.set(prop, { value, immutable })
   }
 
   /**
@@ -99,7 +101,7 @@ class ClassBean {
    */
   removeProperty (prop) {
     if (this._props.has(prop)) {
-      for (let prop_ of this._props) {
+      for (let prop_ of this._props.keys()) {
         if (prop_ === prop) {
           this._props.delete(prop)
           return prop_
@@ -128,7 +130,7 @@ class ClassBean {
    * and their composed attributes.
    */
   * properties () {
-    for (let prop of this._props) {
+    for (let prop of this._props.keys()) {
       let attr = Attribute.from(prop)
       yield { prop, attr }
     }
@@ -202,10 +204,10 @@ class ClassBean {
    * their composed attributes and property guards.
    */
   * all () {
-    for (let prop of this._props) {
+    for (let [prop, { value, immutable }] of this._props.entries()) {
       let guards = this.getPropertyGuards(prop)
       let attr = Attribute.from(prop)
-      yield { prop, attr, guards }
+      yield { prop, value, immutable, attr, guards }
     }
   }
 

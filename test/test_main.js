@@ -32,6 +32,9 @@ describe('Main', () => {
   let bean2 = path.resolve('samples', 'beans', 'software-developer.js')
   let dump2 = path.resolve('samples', 'classes', 'software-developer.js')
 
+  let bean3 = path.resolve('samples', 'beans', 'employee.js')
+  let dump3 = path.resolve('samples', 'classes', 'employee.js')
+
   it('should convert JSON bean into JS class', async () => {
     const jar = await ClassJar.json(bean1)
     let clazz = await jar.clazz.preview()
@@ -40,10 +43,18 @@ describe('Main', () => {
     })
   })
 
-  it('should convert JS bean into JS class', async () => {
+  it('should convert simple JS bean into JS class', async () => {
     const jar = await ClassJar.js(bean2)
     let clazz = await jar.clazz.preview()
     fs.readFile(dump2, (e, data) => {
+      assert.equal(clazz.toString(), data.toString())
+    })
+  })
+
+  it('should convert complex JS bean into JS class', async () => {
+    const jar = await ClassJar.js(bean3)
+    let clazz = await jar.clazz.preview()
+    fs.readFile(dump3, (e, data) => {
       assert.equal(clazz.toString(), data.toString())
     })
   })

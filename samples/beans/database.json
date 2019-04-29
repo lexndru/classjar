@@ -1,0 +1,9 @@
+{
+    "$name": "string",
+    "website": "string",
+    "$relational": "boolean",
+    "version": {
+        "immutable": true,
+        "typeCheck": "string"
+    }
+}

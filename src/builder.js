@@ -66,12 +66,16 @@ class ClassBuilder {
     if (this._bean == null) {
       throw new Error(`Must register a Jar before building`)
     }
-    for (let { prop, attr, guards } of this._bean.all()) {
+    for (let { prop, value, immutable, attr, guards } of this._bean.all()) {
       this._body += `${attr.getter} () {`
       this._body += `if(this.${attr.prop}===null){`
       this._body += `throw new Error('Property "${prop}" is not set');}`
       this._body += `return this.${attr.prop};}`
       this._body += `${attr.setter} (value) {`
+      if (immutable) {
+        this._body += `if(this.${attr.prop}!==null){`
+        this._body += `throw new Error('Cannot set immutable property "${prop}"');}`
+      }
       for (let guard of guards) {
         this._body += `let test = ${guard.toString()};`
         this._body += `if (!test(value)) {`
@@ -79,7 +83,7 @@ class ClassBuilder {
         this._body += `' + value + '" of type ' + typeof value);}`
       }
       this._body += `this.${attr.prop} = value;}`
-      this._head += `this.${attr.prop} = null;`
+      this._head += `this.${attr.prop} = ${JSON.stringify(value)};`
     }
   }
 

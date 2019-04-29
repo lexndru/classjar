@@ -66,23 +66,47 @@ class ClassJar {
    * guards and other type checks. It throws an error if a property
    * has an unsupported guard.
    *
-   * @throw       Error         Unsupported guard type: value
    * @return      ClassJar      Self-instance
    */
   setup () {
     for (let [field, type] of this._content) {
-      let typecheck
-      if (typed('string')(type)) {
-        typecheck = typed(type)
-      } else if (typed('func')(type)) {
-        typecheck = type
-      } else {
-        throw new Error(`Unsupported guard ${typeof type}: ${type}`)
+      let defaultFieldValue = null
+      let immutableField = false
+      if (typeof type === 'object' && Object(type) === type) {
+        let { defaultValue, typeCheck, immutable } = type
+        immutableField = immutable === true
+        defaultFieldValue = defaultValue
+        type = typeCheck
       }
-      this._beanjar.addProperty(field)
-      this._beanjar.addPropertyGuard(field, typecheck)
+      if (field.charAt(0) === `$`) {
+        immutableField = true
+        field = field.substring(1)
+      }
+      this._beanjar.addProperty(field, defaultFieldValue, immutableField)
+      this._beanjar.addPropertyGuard(field, this.parseTypeCheck(type, field))
     }
     return this
+  }
+
+  /**
+   * Parse potential typecheck for a given field guard. Return callback
+   * on success or throw an error if guard is not supported.
+   *
+   * @param guard     Object      Potential typecheck argument to validate
+   * @param field     String      Field name to identify on error
+   * @throws          Error       Unsupported guard type: value
+   * @return          Function    Typecheck callback
+   */
+  parseTypeCheck (guard, field) {
+    let typeCheck
+    if (typed('string')(guard)) {
+      typeCheck = typed(guard)
+    } else if (typed('func')(guard)) {
+      typeCheck = guard
+    } else {
+      throw new Error(`Unsupported typecheck for field "${field}" of type ${typeof guard}: ${guard}`)
+    }
+    return typeCheck
   }
 
   /**

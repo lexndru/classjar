@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+const os = require('os')
 const path = require('path')
 
 const { ArgumentParser } = require('argparse')
@@ -59,14 +60,23 @@ async function main (argv) {
     action: `storeTrue`
   })
 
+  shell.addArgument(`--preview`, {
+    help: `Print to console instead of saving`,
+    action: `storeTrue`
+  })
+
   const args = shell.parseArgs()
+
+  let fp = args.src
+  if (!fp.startsWith('/')) {
+    fp = path.join(process.cwd(), fp)
+  }
 
   if (args.js === true) {
     handler = 'js'
   } else if (args.json === true) {
     handler = 'json'
   } else {
-    let fp = args.src
     if (fp.endsWith('.json')) {
       handler = 'json'
     } else if (fp.endsWith('.js')) {
@@ -81,19 +91,32 @@ async function main (argv) {
   let output = path.resolve(args.dest, classfile)
 
   try {
-    const jar = await ClassJar[handler](args.src)
-    await jar.clazz.saveAs(output, 'js')
+    const jar = await ClassJar[handler](fp)
+
+    if (args.preview) {
+      let preview = await jar.clazz.preview()
+      process.stdout.write(preview)
+      process.stdout.write(os.EOL)
+    } else {
+      await jar.clazz.saveAs(output, 'js')
+    }
+
     className = jar.bean.getName()
+
   } catch (e) {
-    process.stderr.write(`Cannot generate class from bean!\n`)
-    process.stderr.write(` (error) => ${e.message}\n`)
+    process.stderr.write(`Cannot generate class from bean!${os.EOL}`)
+    process.stderr.write(` (error) => ${e.message}${os.EOL}`)
     process.exit(1)
   }
 
-  process.stdout.write(`Successfully generated class!\n`)
-  process.stdout.write(` (bean) => ${args.src}\n`)
-  process.stdout.write(` (file) => ${output}.js\n`)
-  process.stdout.write(` (name) => ${className}\n`)
+  process.stdout.write(`Successfully generated class!${os.EOL}`)
+  process.stdout.write(` (name) => ${className}${os.EOL}`)
+  process.stdout.write(` (bean) => ${fp}${os.EOL}`)
+
+  if (!args.preview) {
+    process.stdout.write(` (file) => ${output}.js${os.EOL}`)
+  }
+
 }
 
 module.exports = { main }
